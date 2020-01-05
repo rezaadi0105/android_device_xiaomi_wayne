@@ -1,6 +1,6 @@
 
 /*
-   Copyright (c) 2018, The LineageOS Project
+   Copyright (c) 2018-2020, The LineageOS Project
    Redistribution and use in source and binary forms, with or without
    modification, are permitted provided that the following conditions are
    met:
@@ -46,21 +46,16 @@ using android::init::property_set;
 void init_target_properties()
 {
     std::ifstream fin;
-    std::string buf;
-    std::string product = GetProperty("ro.product.name", "");
+    std::string hwdevice = GetProperty("ro.boot.hwdevice", "");
 
-    if (product.find("wayne") == std::string::npos)
+    if (hwdevice.find("wayne") == std::string::npos)
         return;
 
-    fin.open("/proc/cmdline");
-    while (std::getline(fin, buf, ' '))
-        if (buf.find("hwversion") != std::string::npos)
-            break;
-    fin.close();
+    std::string hwversion = GetProperty("ro.boot.hwversion", "");
 
-    if (buf.find("2.31.0") != std::string::npos) {
+    if (hwversion.find("2.31.0") != std::string::npos) {
         property_set("ro.product.model", "MI 6X MIKU");
-    } else {
+    } else if (hwversion.find("2.1.0") != std::string::npos) {
         property_set("ro.product.model", "MI 6X");
     }
 }
